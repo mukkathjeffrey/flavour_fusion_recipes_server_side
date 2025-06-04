@@ -1,0 +1,33 @@
+{
+  "name": "flavour_fusion_recipes_server_side",
+  "version": "1.0.0",
+  "description": "server-side code for a recipe app using node.js and mongodb.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mukkathjeffrey/flavour_fusion_recipes_server_side.git"
+  },
+  "keywords": [
+    "node.js",
+    "express",
+    "mongodb",
+    "api",
+    "backend",
+    "recipes"
+  ],
+  "author": "jeffrey mukkath",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mukkathjeffrey/flavour_fusion_recipes_server_side/issues"
+  },
+  "homepage": "https://github.com/mukkathjeffrey/flavour_fusion_recipes_server_side#readme",
+  "dependencies": {
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0"
+  }
+}
