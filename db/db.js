@@ -13,10 +13,7 @@ const client = new MongoClient(MONGO_URI, {
 let db = null;
 
 async function connect_db() {
-  if (db) {
-    console.log("db already available");
-    return db;
-  }
+  if (db) return db;
 
   try {
     await client.connect();
