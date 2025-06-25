@@ -82,4 +82,39 @@ router.post("/register", async (req, res) => {
   }
 });
 
+router.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ message: "email and password are required" });
+  }
+
+  try {
+    const db = await connect_db();
+    const user_collection = db.collection("users");
+
+    const user = await user_collection.findOne({ email });
+    if (!user) {
+      return res.status(401).json({ message: "invalid credentials" });
+    }
+
+    const password_match = await bcrypt.compare(password, user.password);
+    if (!password_match) {
+      return res.status(401).json({ message: "invalid credentials" });
+    }
+
+    res.status(200).json({
+      message: "login successful",
+      user: {
+        first_name: user.firstname,
+        last_name: user.last_name,
+        email: user.email,
+      },
+    });
+  } catch (error) {
+    console.error("login error:", error);
+    res.status(500).json({ message: "internal server error" });
+  }
+});
+
 export default router;
