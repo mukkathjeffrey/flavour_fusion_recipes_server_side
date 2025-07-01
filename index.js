@@ -6,6 +6,8 @@ import "dotenv/config";
 import connect_db from "./db/db.js";
 // import user_related routes
 import user_route from "./routes/user.js";
+// import recipe_related routes
+import recipe_route from "./routes/recipe.js";
 
 // create an express application
 const app = express();
@@ -21,6 +23,8 @@ connect_db()
   .then(() => {
     // register user route handlers under /api/users
     app.use("/api/users", user_route);
+    // register recipe route handlers under /api/recipes
+    app.use("/api/recipes", recipe_route);
 
     // basic root route for testing server status
     app.get("/", (req, res) => {
