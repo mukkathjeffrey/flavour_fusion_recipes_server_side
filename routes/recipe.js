@@ -1,5 +1,7 @@
 // import express framework
 import express from "express";
+// import mongodb objectid for querying by id
+import { ObjectId } from "mongodb";
 // import database connection function
 import connect_db from "../db/db.js";
 
@@ -21,6 +23,35 @@ router.get("/", async (req, res) => {
     // log any errors that occur during the process
     console.error("error fetching recipes:", error);
     // send a 500 internal server error response
+    res.status(500).json({ message: "internal server error" });
+  }
+});
+
+// define a route to handle get requests for a single recipe by id
+router.get("/:id", async (req, res) => {
+  try {
+    // extract id from request parameters
+    const recipe_id = req.params.id;
+    // connect to the database
+    const db = await connect_db();
+    // access the recipes collection from the database
+    const recipes_collection = db.collection("recipes");
+    // find the recipe by its objectid
+    const recipe = await recipes_collection.findOne({
+      _id: new ObjectId(recipe_id),
+    });
+
+    // if no recipe if found, return 404
+    if (!recipe) {
+      return res.status(404).json({ message: "recipe not found" });
+    }
+
+    // return the found recipe
+    res.json(recipe);
+  } catch (error) {
+    // log any errors
+    console.error("error fetching recipe:", error);
+    // send 500 internal server error
     res.status(500).json({ message: "internal server error" });
   }
 });
