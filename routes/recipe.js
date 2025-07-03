@@ -56,5 +56,88 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+// define a route to handle post request for adding a new recipe
+router.post("/", async (req, res) => {
+  // destructure required fields from the request body
+  const {
+    title,
+    subtitle,
+    author_name,
+    description,
+    category,
+    prep_time,
+    cook_time,
+    total_time,
+    servings,
+    ingredients,
+    instructions,
+  } = req.body;
+
+  // check if any required field is missing
+  if (
+    !title ||
+    !subtitle ||
+    !author_name ||
+    !description ||
+    !category ||
+    !prep_time ||
+    !cook_time ||
+    !total_time ||
+    !servings ||
+    !ingredients ||
+    !instructions
+  ) {
+    // respond with a 400 bad request if any field is missing
+    return res.status(400).json({ message: "missing required fields" });
+  }
+
+  try {
+    // connect to the database
+    const db = await connect_db();
+    // get the recipes collection from the database
+    const recipes_collection = db.collection("recipes");
+
+    // helper function to get the current date in yyyy-mm-dd format
+    function get_current_datetime() {
+      const now = new Date();
+
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, "0");
+      const day = String(now.getDate()).padStart(2, "0");
+
+      return `${year}-${month}-${day}`;
+    }
+
+    // create a new recipe object with default images and submitted data
+    const new_recipe = {
+      recipe_image:
+        "https://res.cloudinary.com/de74jeqj6/image/upload/v1751548245/DEFAULT_RECIPE_IMAGE_y9dmeh.png",
+      ingredients_image:
+        "https://res.cloudinary.com/de74jeqj6/image/upload/v1751548255/DEFAULT_INGREDIENTS_IMAGE_ifblqh.png",
+      title: title,
+      subtitle: subtitle,
+      author_name: author_name,
+      description: description,
+      category: category,
+      prep_time: prep_time,
+      cook_time: cook_time,
+      total_time: total_time,
+      servings: servings,
+      ingredients: ingredients,
+      instructions: instructions,
+      created_at: get_current_datetime(),
+    };
+
+    // insert the new recipe into the database
+    await recipes_collection.insertOne(new_recipe);
+    // respond with success message
+    res.status(201).json({ message: "recipe added" });
+  } catch (error) {
+    // log the error and respond with a 500 internal server error
+    console.error("error adding recipe", error);
+    res.status(500).json({ message: "internal server error" });
+  }
+});
+
 // export the router to be used in other parts of the application
 export default router;
