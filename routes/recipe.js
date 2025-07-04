@@ -99,13 +99,12 @@ router.post("/", async (req, res) => {
 
     // helper function to get the current date in yyyy-mm-dd format
     function get_current_datetime() {
-      const now = new Date();
+      const date = new Date();
 
-      const year = now.getFullYear();
-      const month = String(now.getMonth() + 1).padStart(2, "0");
-      const day = String(now.getDate()).padStart(2, "0");
+      const options = { year: "numeric", month: "long", day: "numeric" };
+      const formatted_date = date.toLocaleDateString("en-us", options);
 
-      return `${year}-${month}-${day}`;
+      return formatted_date.toLowerCase();
     }
 
     // create a new recipe object with default images and submitted data
