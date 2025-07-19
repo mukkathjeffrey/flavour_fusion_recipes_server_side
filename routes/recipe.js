@@ -207,5 +207,41 @@ router.put("/:id", async (req, res) => {
   }
 });
 
+// define a route to handle delete request for deleting a recipe
+router.delete("/:id", async (req, res) => {
+  // extract recipe id from the request parameters
+  const recipe_id = req.params.id;
+
+  // check if the recipe id is provided
+  if (!recipe_id) {
+    return res.status(400).json({ message: "recipe id is missing" });
+  }
+
+  try {
+    // connect to the database
+    const db = await connect_db();
+    // get the recipes collection
+    const recipes_collection = db.collection("recipes");
+
+    // attempt to delete the document with the matching id
+    const result = await recipes_collection.deleteOne({
+      _id: new ObjectId(recipe_id), // convert string id to mongodb objectid
+    });
+
+    // if no document was deleted, the recipe is not found
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ message: "recipe not found" });
+    }
+
+    // if deletion was successful, send a success response
+    res.status(200).json({ message: "recipe deleted" });
+  } catch (error) {
+    // catch and log any errors that occurred during the process
+    console.error("error deleting recipe", error);
+    // send an internal server error response
+    res.status(500).json({ message: "internal server error" });
+  }
+});
+
 // export the router to be used in other parts of the application
 export default router;
